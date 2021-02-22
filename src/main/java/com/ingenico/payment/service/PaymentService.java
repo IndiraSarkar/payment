@@ -1,5 +1,5 @@
 package com.ingenico.payment.service;
 
-public interface PaymentService  {
+public class PaymentService {
 
 }
