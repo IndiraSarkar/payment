@@ -196,7 +196,7 @@
 					 Response
 				</th>
 				<td>
-					${dualVerification.responseType} %>
+					${dualVerification.responseType} 
 				</td>
 			</tr>
 

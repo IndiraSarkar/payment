@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +30,10 @@ public class PaymentController {
 
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
+
 
 	@GetMapping("/")
 	public ModelAndView passTranscationWithModelAndView(HttpServletRequest request) {
@@ -36,15 +42,15 @@ public class PaymentController {
 		JSONParser parser = new JSONParser();
 		try {
 
+			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
 			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream("E://inginco-payment//src//main//resources/ConfigFile.json")));
+					new FileInputStream(fileResource.getFile())));
 
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
 			String returnUrl = url + "response/response-handler";
 			int transcationId = paymentService.generateRandomNumber();
 
-			String jsonString = new Gson().toJson(merchantData);
 
 			ModelAndView modelAndView = new ModelAndView("Home");
 			modelAndView.addObject("config_data", merchantData);
@@ -87,8 +93,10 @@ public class PaymentController {
 		JSONObject jsonObject = null;
 		JSONParser parser = new JSONParser();
 		try {
+			
+			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
 			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream("E://inginco-payment//src//main//resources/ConfigFile.json")));
+					new FileInputStream(fileResource.getFile())));
 
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
@@ -125,8 +133,9 @@ public class PaymentController {
 		JSONObject jsonObject = null;
 		JSONParser parser = new JSONParser();
 		try {
+			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
 			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream("E://inginco-payment//src//main//resources/ConfigFile.json")));
+					new FileInputStream(fileResource.getFile())));
 
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
