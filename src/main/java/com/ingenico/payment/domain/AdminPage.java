@@ -2,23 +2,22 @@ package com.ingenico.payment.domain;
 
 public class AdminPage {
 	
-	private String description;
-	private String merchantId;
-	private String merchantSchemeCode; //item id
-	private String salt; //SHA-152
+	private String merchantCode;//t3348
+	private String merchantSchemeCode; //item id  test
+	private String salt; //SHA-152 1496899267KMOWJE
 	private String currency;
 	private String paymentType;
-	private String primaryColor;
-	private String secondaryColor;
-	private String buttonColor1;
-	private String buttonColor2;
-	private String logoUrl;
+	private String primaryColor; //#000000
+	private String secondaryColor; //#FFFFFF
+	private String buttonColor1; //#1969bb
+	private String buttonColor2; //#FFFFFF
+	private String logoUrl; //https://www.paynimo.com/CompanyDocs/company-logo-md.png
 	private String expressway; //disable,enable
 	private String separateCardMode; //disable,enable
 	private String newWindowFlow; //disable,enable
 	private String merchantMessage;
 	private String dislaimerMessage;
-	private String paymentMode;
+	private String paymentMode; //cards,wallets,netBanking,imps,cashCards,UPI,MVISA,debitPin,NEFTRTGS,emiBanks
 	private String paymentModeOrder;
 	private String instrumentDeregistration; //disable,enable
 	private String transactionType;
@@ -27,17 +26,11 @@ public class AdminPage {
 	private String displayTransactionMsg; //disable,enable
 	private String embeddedPaymentGateway; //disable,enable
 	
-	public String getDescription() {
-		return description;
+	public String getMerchantCode() {
+		return merchantCode;
 	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getMerchantId() {
-		return merchantId;
-	}
-	public void setMerchantId(String merchantId) {
-		this.merchantId = merchantId;
+	public void setMerchantCode(String merchantCode) {
+		this.merchantCode = merchantCode;
 	}
 	public String getMerchantSchemeCode() {
 		return merchantSchemeCode;
@@ -173,17 +166,21 @@ public class AdminPage {
 	}
 	@Override
 	public String toString() {
-		return "AdminPage [description=" + description + ", merchantId=" + merchantId + ", merchantSchemeCode="
-				+ merchantSchemeCode + ", salt=" + salt + ", currency=" + currency + ", paymentType=" + paymentType
-				+ ", primaryColor=" + primaryColor + ", secondaryColor=" + secondaryColor + ", buttonColor1="
-				+ buttonColor1 + ", buttonColor2=" + buttonColor2 + ", logoUrl=" + logoUrl + ", expressway="
-				+ expressway + ", separateCardMode=" + separateCardMode + ", newWindowFlow=" + newWindowFlow
-				+ ", merchantMessage=" + merchantMessage + ", dislaimerMessage=" + dislaimerMessage + ", paymentMode="
-				+ paymentMode + ", paymentModeOrder=" + paymentModeOrder + ", instrumentDeregistration="
-				+ instrumentDeregistration + ", transactionType=" + transactionType + ", hideSaveInstruments="
-				+ hideSaveInstruments + ", saveInstrument=" + saveInstrument + ", displayTransactionMsg="
-				+ displayTransactionMsg + ", embeddedPaymentGateway=" + embeddedPaymentGateway + "]";
+		return "AdminPage [merchantCode=" + merchantCode + ", merchantSchemeCode=" + merchantSchemeCode + ", salt="
+				+ salt + ", currency=" + currency + ", paymentType=" + paymentType + ", primaryColor=" + primaryColor
+				+ ", secondaryColor=" + secondaryColor + ", buttonColor1=" + buttonColor1 + ", buttonColor2="
+				+ buttonColor2 + ", logoUrl=" + logoUrl + ", expressway=" + expressway + ", separateCardMode="
+				+ separateCardMode + ", newWindowFlow=" + newWindowFlow + ", merchantMessage=" + merchantMessage
+				+ ", dislaimerMessage=" + dislaimerMessage + ", paymentMode=" + paymentMode + ", paymentModeOrder="
+				+ paymentModeOrder + ", instrumentDeregistration=" + instrumentDeregistration + ", transactionType="
+				+ transactionType + ", hideSaveInstruments=" + hideSaveInstruments + ", saveInstrument="
+				+ saveInstrument + ", displayTransactionMsg=" + displayTransactionMsg + ", embeddedPaymentGateway="
+				+ embeddedPaymentGateway + "]";
 	}
+
+	
+	
+	
 	
 	
 	

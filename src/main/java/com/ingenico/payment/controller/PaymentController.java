@@ -14,15 +14,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.google.gson.Gson;
 import com.ingenico.payment.domain.MerchantData;
 import com.ingenico.payment.domain.TranscationResponse;
@@ -37,21 +31,25 @@ public class PaymentController {
 	@Value("${ingenico.url}")
 	private String url;
 	
-	@GetMapping("/adminForm")  
+	@GetMapping("/admin")  
     public ModelAndView adminDisplay()  
     {  
 		System.out.println("ADMIN CONTROLLER");
-        return new ModelAndView("adminForm", "command", new AdminPage());
+        return new ModelAndView("admin");
     } 
 	
 	
-	@PostMapping("/saveAdminPageDetails")
-	public String saveAdmin(@ModelAttribute("admin") AdminPage adminPage) {
+	@PostMapping("/admin")
+	public ModelAndView saveAdmin(HttpServletRequest request, @ModelAttribute("admin") AdminPage adminPage) {
 		System.out.println("adminPage :"+adminPage);  
-		 return "admin";
+		String errorMessage = paymentService.saveAdmin(adminPage);
+		ModelAndView modelAndView = new ModelAndView("admin");
+		if(errorMessage!=null)
+			modelAndView.addObject("error", errorMessage);
+		else
+			modelAndView.addObject("response", "Form submitted successfully.");
+		return modelAndView;
 	}
-
-	
 
 
 	@GetMapping("/")

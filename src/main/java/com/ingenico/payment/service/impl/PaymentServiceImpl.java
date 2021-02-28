@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,36 +28,38 @@ import com.ingenico.payment.service.PaymentService;
 @Service
 public class PaymentServiceImpl implements PaymentService{
 	
+	@Value("${admin.json.data.file}")
+	private String jsonFilePath;
+	
 	@Override
 	public String saveAdmin(AdminPage adminPageDetails) {
-		
-        // Creating Object of ObjectMapper define in Jakson Api
-        ObjectMapper objectMapper = new ObjectMapper();
-        FileWriter file = null;
-        try {
- 
-            // get Oraganisation object as a json string
-            String jsonStr = objectMapper.writeValueAsString(adminPageDetails);
- 
-            // Displaying JSON String
-            System.out.println(jsonStr);
-            
-             file = new FileWriter("F:/workspace For Java/payment/src/main/json/admin.json");
-	         file.write(jsonStr);
-	         
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        	if(file!=null) {
-        		try {
+		String errorMsg = null;
+		// Creating Object of ObjectMapper define in Jakson Api
+		ObjectMapper objectMapper = new ObjectMapper();
+		FileWriter file = null;
+		try {
+
+			String jsonStr = objectMapper.writeValueAsString(adminPageDetails);
+
+			// Displaying JSON String
+			System.out.println(jsonStr);
+
+			file = new FileWriter(jsonFilePath);
+			file.write(jsonStr);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			errorMsg = e.getMessage();
+		} finally {
+			if(file!=null) {
+				try {
 					file.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-        	}
+			}
 		}
-	      
-		return null;
+		return errorMsg;
 	}
 
 	@Override
