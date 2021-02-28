@@ -177,8 +177,8 @@
 				</th>
 				<td>
 					<select id="expressway" name="expressway">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 					<br><br>
 					To enable saved payments set its value to yes
@@ -191,8 +191,8 @@
 				</th>
 				<td>
 					<select id="separateCardMode" name="separateCardMode">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 					<br><br>
 					If this feature is enabled checkout shows two separate payment mode(Credit Card and Debit Card)
@@ -205,8 +205,8 @@
 				</th>
 				<td>
 					<select id="newWindowFlow" name="newWindowFlow">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 					<br><br>
 					If this feature is enabled, then bank page will open in new window
@@ -274,8 +274,8 @@
 				</th>
 				<td>
 					<select id="instrumentDeregistration" name="instrumentDeregistration">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 					<br><br>
 					If this feature is enabled, you will have an option to delete saved cards
@@ -299,8 +299,8 @@
 				</th>
 				<td>
 					<select id="hideSaveInstruments" name="hideSaveInstruments">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 					<br><br>
 					If enabled checkout hides saved payment options even in case of enableExpressPay is enabled
@@ -313,8 +313,8 @@
 				</th>
 				<td>
 					<select id="saveInstrument" name="saveInstrument">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 					<br><br>
 					Enable this feature to vault instrumen
@@ -327,8 +327,8 @@
 				</th>
 				<td>
 					<select id="displayTransactionMsg" name="displayTransactionMsg">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 				</td>
 			</tr>
@@ -339,8 +339,8 @@
 				</th>
 				<td>
 					<select id="embeddedPaymentGateway" name="embeddedPaymentGateway">
-   						<option value="Disabled">Disabled</option>
-   						<option value="Enabled">Enabled</option>
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
 					</select>
 				</td>
 			</tr>
