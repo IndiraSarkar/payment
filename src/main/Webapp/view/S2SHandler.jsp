@@ -5,7 +5,7 @@
 
 <head>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-	<title>Refund Page</title>
+	<title>S2S Handler Page</title>
 	<style>
 		table, td, th {
 			border: 1px solid black;
@@ -21,7 +21,8 @@
  <form action="s2s" method="post"> 
  
   <label for="Msg">Msg:</label>
-	    <input type="text" id="msg" name="msg"  required=true />
+	    <input type="text" id="msg" name="msg"  required=true size="70"/>
+	    <br><br>
 	    <input type="submit" value="Submit">
      </form>
 	     
