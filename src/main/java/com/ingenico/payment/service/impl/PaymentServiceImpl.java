@@ -7,9 +7,17 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,8 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ingenico.payment.domain.AdminPage;
 import com.ingenico.payment.domain.MerchantData;
+import com.ingenico.payment.domain.TranscationResponse;
 import com.ingenico.payment.service.PaymentService;
 
 @Service
@@ -275,5 +285,55 @@ public class PaymentServiceImpl implements PaymentService{
 
 		return obj;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TranscationResponse> getResponseListForReconciliation(Map<String, String> configData, MerchantData merchantData) {
+		
+		String transactionIds = configData.get("merchantRefNo").trim();
+		List<String> transactionIdList = Arrays.asList(transactionIds.split(","));
+		LocalDate fromDate = LocalDate.parse(configData.get("fromDate"));
+		LocalDate toDate = LocalDate.parse(configData.get("toDate"));
+		List<TranscationResponse> transactionResponseList = new ArrayList<>();
+		for(String transactionId: transactionIdList) {
+			List<LocalDate> listOfDates = getDatesBetween(fromDate, toDate);
+			for(LocalDate date: listOfDates) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-YYYY"); 
+				String dateTime = formatter.format(date);
+				JSONObject obj = new JSONObject();
+				JSONObject identifierObj = new JSONObject();
+				identifierObj.put("identifier", merchantData.getMerchantCode());
+				obj.put("merchant", identifierObj);
+				JSONObject deviceIdentifierObj = new JSONObject();
+				deviceIdentifierObj.put("deviceIdentifier", "S");
+				deviceIdentifierObj.put("currency", merchantData.getCurrency());
+				deviceIdentifierObj.put("dateTime", dateTime);
+				deviceIdentifierObj.put("identifier", transactionId);
+				deviceIdentifierObj.put("requestType", "O");
+				obj.put("transaction", deviceIdentifierObj);
+				
+				String liveUrl = "https://www.paynimo.com/api/paynimoV2.req";
+				String dualVerificationResult = fetchApiResponse(liveUrl, obj);
+				TranscationResponse transcationResponse = new Gson().fromJson(dualVerificationResult,
+						TranscationResponse.class);
+				if(!transcationResponse.getPaymentMethod().getPaymentTransaction().getErrorMessage().equalsIgnoreCase("Transaction Not Found")&& 
+						!transcationResponse.getPaymentMethod().getPaymentTransaction().getStatusCode().equals("9999")) {
+					transactionResponseList.add(transcationResponse);
+					break;
+				}
+			}
+		}
+		return transactionResponseList;
+	}
+	
+	public static List<LocalDate> getDatesBetween(
+			  LocalDate startDate, LocalDate endDate) { 
+			 
+			    long numOfDaysBetween = ChronoUnit.DAYS.between(startDate, endDate); 
+			    return IntStream.iterate(0, i -> i + 1)
+			      .limit(numOfDaysBetween)
+			      .mapToObj(i -> startDate.plusDays(i))
+			      .collect(Collectors.toList()); 
+			}
 	
 }

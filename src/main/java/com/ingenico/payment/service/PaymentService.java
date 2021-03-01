@@ -1,12 +1,14 @@
 package com.ingenico.payment.service;
 
 import com.ingenico.payment.domain.AdminPage;
-	
+
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
 
 import com.ingenico.payment.domain.MerchantData;
+import com.ingenico.payment.domain.TranscationResponse;
 
 public interface PaymentService {
 	
@@ -29,5 +31,7 @@ public interface PaymentService {
 	JSONObject createRequestForOfflineVerification(Map<String,String> configData,MerchantData merchantData);
 
 	JSONObject createRequestForRefund(Map<String, String> configData, MerchantData merchantData);
+
+	List<TranscationResponse> getResponseListForReconciliation(Map<String, String> configData, MerchantData merchantData);
 
 }

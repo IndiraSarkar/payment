@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ingenico.payment.domain.AdminPage;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
@@ -174,8 +175,44 @@ public class PaymentController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
 
 		return null;
 
 	}
+	
+	@GetMapping("/reconcile")
+	@ResponseBody
+	public ModelAndView reconcile() {
+		return new ModelAndView("ReconcileHandler");
+
+	}
+	
+	@PostMapping("/reconcile")
+	@ResponseBody
+	public ModelAndView reconcileHandler(HttpServletRequest request, @RequestParam Map<String, String> configData) {
+
+		JSONObject jsonObject = null;
+		JSONParser parser = new JSONParser();
+		try {
+			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
+			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
+					new FileInputStream(fileResource.getFile())));
+			
+			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
+
+			List<TranscationResponse> transcationResponseList = paymentService.getResponseListForReconciliation(configData, merchantData);
+
+			ModelAndView modelAndView = new ModelAndView("ReconcileHandler");
+			modelAndView.addObject("responseList", transcationResponseList);
+			return modelAndView;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 }
