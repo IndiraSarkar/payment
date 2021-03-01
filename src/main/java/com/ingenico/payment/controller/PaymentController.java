@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ingenico.payment.domain.AdminPage;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Arrays;
+
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
@@ -46,7 +47,7 @@ public class PaymentController {
 	
 	
 	@PostMapping("/admin")
-	public ModelAndView saveAdmin(HttpServletRequest request, @ModelAttribute("admin") AdminPage adminPage) {
+	public ModelAndView saveAdmin(HttpServletRequest request, @ModelAttribute("admin") MerchantData adminPage) {
 		System.out.println("adminPage :"+adminPage);  
 		String errorMessage = paymentService.saveAdmin(adminPage);
 		ModelAndView modelAndView = new ModelAndView("admin");
@@ -179,8 +180,51 @@ public class PaymentController {
 		
 
 		return null;
+	}
+	
+	@GetMapping("/s2s")
+	public ModelAndView getS2sHandler(HttpServletRequest request) {
+		return  new ModelAndView("S2SHandler");
+		
+		
+	}
+		
+	@PostMapping("/s2s")
+	public ModelAndView s2sHandler(HttpServletRequest request, @RequestParam(value = "msg") String msg) {
+
+		JSONObject jsonObject = null;
+		JSONParser parser = new JSONParser();
+
+		try {
+			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
+			jsonObject = (JSONObject) parser.parse(new InputStreamReader(new FileInputStream(fileResource.getFile())));
+
+			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
+
+			String[] data = msg.split("\\|");
+			String clntTxnRef = data[3];
+			String pgTxnId = data[5];
+			String[] remove = Arrays.copyOf(data, data.length - 1);
+
+			String dataString = String.join("|", remove) + "|" + merchantData.getSalt();
+
+			int status = 0;
+			if (data[15].equals(paymentService.encryptedHash(dataString)))
+				status = 1;
+
+			String response = clntTxnRef + "| " + pgTxnId + " |" + status;
+
+			ModelAndView modelAndView = new ModelAndView("S2SHandler");
+			modelAndView.addObject("response", response);
+			return modelAndView;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 
 	}
+
 	
 	@GetMapping("/reconcile")
 	@ResponseBody
@@ -214,5 +258,10 @@ public class PaymentController {
 		return null;
 	}
 	
-	
+
 }
+	
+	
+	
+	
+

@@ -42,7 +42,7 @@ public class PaymentServiceImpl implements PaymentService{
 	private String jsonFilePath;
 	
 	@Override
-	public String saveAdmin(AdminPage adminPageDetails) {
+	public String saveAdmin(MerchantData adminPageDetails) {
 		String errorMsg = null;
 		// Creating Object of ObjectMapper define in Jakson Api
 		ObjectMapper objectMapper = new ObjectMapper();
