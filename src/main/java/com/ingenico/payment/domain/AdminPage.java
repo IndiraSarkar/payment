@@ -25,6 +25,7 @@ public class AdminPage {
 	private String saveInstrument; //disable,enable
 	private String displayTransactionMsg; //disable,enable
 	private String embeddedPaymentGateway; //disable,enable
+	private String enableSi;
 	
 	public String getMerchantCode() {
 		return merchantCode;
@@ -164,6 +165,12 @@ public class AdminPage {
 	public void setEmbeddedPaymentGateway(String embeddedPaymentGateway) {
 		this.embeddedPaymentGateway = embeddedPaymentGateway;
 	}
+	public String getEnableSi() {
+		return enableSi;
+	}
+	public void setEnableSi(String enableSi) {
+		this.enableSi = enableSi;
+	}
 	@Override
 	public String toString() {
 		return "AdminPage [merchantCode=" + merchantCode + ", merchantSchemeCode=" + merchantSchemeCode + ", salt="
@@ -175,7 +182,7 @@ public class AdminPage {
 				+ paymentModeOrder + ", instrumentDeregistration=" + instrumentDeregistration + ", transactionType="
 				+ transactionType + ", hideSaveInstruments=" + hideSaveInstruments + ", saveInstrument="
 				+ saveInstrument + ", displayTransactionMsg=" + displayTransactionMsg + ", embeddedPaymentGateway="
-				+ embeddedPaymentGateway + "]";
+				+ embeddedPaymentGateway + ", enableSi=" + enableSi + "]";
 	}
 
 	

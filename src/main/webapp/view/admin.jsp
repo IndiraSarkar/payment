@@ -107,7 +107,7 @@
 					<label for="paymentType">Type of Payment</label>
 				</th>
 				<td>
-					<select id="paymentType" name="paymentType">
+					<select id="paymentType" name="typeOfPayment">
    						<option value="TEST">TEST</option>
    						<option value="LIVE">LIVE</option>
 					</select> 
@@ -165,7 +165,7 @@
 					<label for="logoUrl">logo URL</label>
 				</th>
 				<td>
-					<input type="text" id="logoUrl" name="logoUrl" value="https://www.paynimo.com/CompanyDocs/company-logo-md.png" required=true/>
+					<input type="text" id="logoUrl" name="logoURL" value="https://www.paynimo.com/CompanyDocs/company-logo-md.png" required=true/>
 					<br><br>
 					An absolute URL pointing to a logo image of merchant which will show on checkout popup
 				</td>
@@ -176,7 +176,7 @@
 					<label for="expressway">Enable ExpressPay</label>
 				</th>
 				<td>
-					<select id="expressway" name="expressway">
+					<select id="expressway" name="enableExpressPay">
    						<option value="false">Disabled</option>
    						<option value="true">Enabled</option>
 					</select>
@@ -204,7 +204,7 @@
 					<label for="newWindowFlow">Enable New Window Flow</label>
 				</th>
 				<td>
-					<select id="newWindowFlow" name="newWindowFlow">
+					<select id="newWindowFlow" name="enableNewWindowFlow">
    						<option value="false">Disabled</option>
    						<option value="true">Enabled</option>
 					</select>
@@ -229,7 +229,7 @@
 					<label for="dislaimerMessage">Disclaimer Message</label>
 				</th>
 				<td>
-					<input type="text" id="dislaimerMessage" name="dislaimerMessage" />
+					<input type="text" id="dislaimerMessage" name="disclaimerMessage" />
 					<br><br>
 					Customize disclaimer message from merchant which will be shown to customer in checkout page
 				</td>
@@ -273,7 +273,7 @@
 					<label for="instrumentDeregistration">Enable Instrument De-Registration</label>
 				</th>
 				<td>
-					<select id="instrumentDeregistration" name="instrumentDeregistration">
+					<select id="instrumentDeregistration" name="enableInstrumentDeRegistration">
    						<option value="false">Disabled</option>
    						<option value="true">Enabled</option>
 					</select>
@@ -298,7 +298,7 @@
 					<label for="hideSaveInstruments">Hide SavedInstruments</label>
 				</th>
 				<td>
-					<select id="hideSaveInstruments" name="hideSaveInstruments">
+					<select id="hideSaveInstruments" name="hideSavedInstruments">
    						<option value="false">Disabled</option>
    						<option value="true">Enabled</option>
 					</select>
@@ -326,7 +326,7 @@
 					<label for="displayTransactionMsg">Display Transaction Message on Popup</label>
 				</th>
 				<td>
-					<select id="displayTransactionMsg" name="displayTransactionMsg">
+					<select id="displayTransactionMsg" name="displayTransactionMessageOnPopup">
    						<option value="false">Disabled</option>
    						<option value="true">Enabled</option>
 					</select>
@@ -338,7 +338,19 @@
 					<label for="embeddedPaymentGateway">Embed Payment Gateway On Page</label>
 				</th>
 				<td>
-					<select id="embeddedPaymentGateway" name="embeddedPaymentGateway">
+					<select id="embeddedPaymentGateway" name="embedPaymentGatewayOnPage">
+   						<option value="false">Disabled</option>
+   						<option value="true">Enabled</option>
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>
+					<label for="enableSi">Enable Si</label>
+				</th>
+				<td>
+					<select id="enableSi" name="enableSi">
    						<option value="false">Disabled</option>
    						<option value="true">Enabled</option>
 					</select>
