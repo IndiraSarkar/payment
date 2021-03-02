@@ -38,13 +38,13 @@ import com.ingenico.payment.service.PaymentService;
 
 @Service
 public class PaymentServiceImpl implements PaymentService{
-
+	
 	@Value("${admin.json.data.file}")
 	private String jsonFilePath;
-
+	
 	@Value("${ingenico.url}")
 	private String url;
-
+	
 	@Override
 	public String saveAdmin(MerchantData adminPageDetails) {
 		String errorMsg = null;
@@ -97,60 +97,58 @@ public class PaymentServiceImpl implements PaymentService{
 	@Override
 	public String getHashData(Map<String, String> configData) {
 		return configData.get("MerchantCode") + "|" + configData.get("transactionID")+ "|" + configData.get("amount")+ "|" + configData.get("accNo")+ "|" +
-				configData.get("custID")+ "|" + configData.get("mobNo")+ "|" + configData.get("email")+ "|" + configData.get("debitStartDate")+ "|" + configData.get("debitEndDate") 
-				+ "|" + configData.get("maxAmount")+ "|" + configData.get("amountType")+ "|" + configData.get("frequency")+ "|" + configData.get("cardNumber")+ "|" +
-				configData.get("expMonth")+ "|" + configData.get("expYear")+ "|" + configData.get("cvvCode")+ "|" + configData.get("SALT");
-
-
+		 configData.get("custID")+ "|" + configData.get("mobNo")+ "|" + configData.get("email")+ "|" + configData.get("debitStartDate")+ "|" + configData.get("debitEndDate") 
+		+ "|" + configData.get("maxAmount")+ "|" + configData.get("amountType")+ "|" + configData.get("frequency")+ "|" + configData.get("cardNumber")+ "|" +
+		 configData.get("expMonth")+ "|" + configData.get("expYear")+ "|" + configData.get("cvvCode")+ "|" + configData.get("SALT");
+		
+		
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getHashObject(String hashValue, Map<String, String> configData) {
 		String merchantData = configData.get("config_data");
-
 		Map<String,String> merchantDataMap = convertToStringToHashMap(merchantData);
 		JSONObject obj = new JSONObject();
-
-
+		
+		
 		JSONObject consumerDataObj = new JSONObject();
 		consumerDataObj.put("deviceId","WEBSH2");
 		consumerDataObj.put("token", hashValue);
 		consumerDataObj.put("returnUrl", configData.get("ReturnUrl"));
 		consumerDataObj.put("paymentMode", merchantDataMap.get("paymentMode"));
-		String[] paymentArray = merchantDataMap.get("paymentModeOrder").trim().split(",");
-		for (String string : paymentArray) {
-			System.out.println("payment array"+string);
-		}
-		consumerDataObj.put("paymentModeOrder",paymentArray);
-
+		/*
+		 * String[] paymentArray = merchantDataMap.get("paymentModeOrder").split(",");
+		 * 
+		 * consumerDataObj.put("paymentModeOrder",paymentArray);
+		 */ 
 		String checkOut = null;
 		if(convertStringToBool(merchantDataMap.get("embedPaymentGatewayOnPage")))
-			checkOut = "#ingenico_embeded_popup";
+				checkOut = "#ingenico_embeded_popup";
 		else
 			checkOut = "";				
-
+				
 		consumerDataObj.put("checkoutElement", checkOut);
 		consumerDataObj.put("merchantLogoUrl", merchantDataMap.get("logoURL"));
 		consumerDataObj.put("merchantId", configData.get("MerchantCode"));
-
+		
 		consumerDataObj.put("merchantMsg", merchantDataMap.get("merchantMessage"));
 		consumerDataObj.put("disclaimerMsg", merchantDataMap.get("disclaimerMessage"));
 		consumerDataObj.put("currency", configData.get("currency"));
 		consumerDataObj.put("consumerId", configData.get("custID"));
-
+		
 		consumerDataObj.put("consumerMobileNo", configData.get("mobNo"));
 		consumerDataObj.put("consumerEmailId", configData.get("email"));
 		consumerDataObj.put("txnId", configData.get("transactionID"));
-
-
+		
+		
 		JSONObject customStyleObj = new JSONObject();
 		customStyleObj.put("PRIMARY_COLOR_CODE", merchantDataMap.get("primaryColor"));
 		customStyleObj.put("SECONDARY_COLOR_CODE", merchantDataMap.get("secondaryColor"));
 		customStyleObj.put("BUTTON_COLOR_CODE_1", merchantDataMap.get("buttonColor1"));
 		customStyleObj.put("BUTTON_COLOR_CODE_2", merchantDataMap.get("buttonColor2"));
-
-
+		
+		
 		JSONArray itemArray = new JSONArray();
 		JSONObject itemDataObj = new JSONObject();
 		itemDataObj.put("itemId", configData.get("scheme"));
@@ -161,11 +159,11 @@ public class PaymentServiceImpl implements PaymentService{
 
 		consumerDataObj.put("items", itemArray);
 		consumerDataObj.put("customStyle", customStyleObj);
-
-
-
+		
+		
+		
 		obj.put("consumerData", consumerDataObj);
-
+		
 		JSONObject featureObj = new JSONObject();
 		featureObj.put("showPGResponseMsg", true);
 		featureObj.put("enableMerTxnDetails", true);
@@ -177,14 +175,14 @@ public class PaymentServiceImpl implements PaymentService{
 		featureObj.put("hideSavedInstruments", convertStringToBool(merchantDataMap.get("hideSavedInstruments")));
 		featureObj.put("separateCardMode", convertStringToBool(merchantDataMap.get("separateCardMode")));
 		featureObj.put("payWithSavedInstrument", convertStringToBool(merchantDataMap.get("saveInstrument")));
-
+		
 		//add feature to a object
-
+		
 		obj.put("features", featureObj);
-
+		
 		System.out.println("json object:"+obj);
-
-
+			
+		
 		return obj;
 	}
 
@@ -211,11 +209,11 @@ public class PaymentServiceImpl implements PaymentService{
 		}
 		return null;
 	}
-
+	 
 	boolean convertStringToBool(String data) {
 
 		return Boolean.valueOf(data);
-
+		
 
 	}
 
@@ -226,7 +224,7 @@ public class PaymentServiceImpl implements PaymentService{
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(obj.toString(), headers);
 		return restTemplate.postForObject(url, entity, String.class);
-
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -268,7 +266,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		return obj;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject createRequestForRefund(Map<String, String> configData, MerchantData merchantData) {
@@ -290,11 +288,11 @@ public class PaymentServiceImpl implements PaymentService{
 
 		return obj;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TranscationResponse> getResponseListForReconciliation(Map<String, String> configData, MerchantData merchantData) {
-
+		
 		String transactionIds = configData.get("merchantRefNo").trim();
 		List<String> transactionIdList = Arrays.asList(transactionIds.split(","));
 		LocalDate fromDate = LocalDate.parse(configData.get("fromDate"));
@@ -316,7 +314,7 @@ public class PaymentServiceImpl implements PaymentService{
 				deviceIdentifierObj.put("identifier", transactionId);
 				deviceIdentifierObj.put("requestType", "O");
 				obj.put("transaction", deviceIdentifierObj);
-
+				
 				String liveUrl = "https://www.paynimo.com/api/paynimoV2.req";
 				String dualVerificationResult = fetchApiResponse(liveUrl, obj);
 				TranscationResponse transcationResponse = new Gson().fromJson(dualVerificationResult,
@@ -330,36 +328,36 @@ public class PaymentServiceImpl implements PaymentService{
 		}
 		return transactionResponseList;
 	}
-
+	
 	public static List<LocalDate> getDatesBetween(
-			LocalDate startDate, LocalDate endDate) { 
+			  LocalDate startDate, LocalDate endDate) { 
+			 
+			    long numOfDaysBetween = ChronoUnit.DAYS.between(startDate, endDate); 
+			    return IntStream.iterate(0, i -> i + 1)
+			      .limit(numOfDaysBetween)
+			      .mapToObj(i -> startDate.plusDays(i))
+			      .collect(Collectors.toList()); 
+			}
 
-		long numOfDaysBetween = ChronoUnit.DAYS.between(startDate, endDate); 
-		return IntStream.iterate(0, i -> i + 1)
-				.limit(numOfDaysBetween)
-				.mapToObj(i -> startDate.plusDays(i))
-				.collect(Collectors.toList()); 
-	}
+			@Override
+		public JSONObject fetchDataFromFile(){
 
-	@Override
-	public JSONObject fetchDataFromFile(){
-
-		JSONParser parser = new JSONParser();
-		FileReader fr = null;
-		try {
-			fr = new FileReader(jsonFilePath);
-			return (JSONObject) parser.parse(fr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
+			JSONParser parser = new JSONParser();
+			FileReader fr = null;
 			try {
-				fr.close();
-			} catch (IOException e) {
+					fr = new FileReader(jsonFilePath);
+				return (JSONObject) parser.parse(fr);
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-		return null;
-	}
+			finally {
+				try {
+					fr.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+			}
 
-}
+		}
