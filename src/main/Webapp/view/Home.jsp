@@ -102,6 +102,7 @@
 		
 		  <div><button id="btnSubmit">Submit</button>
 			</div>
+		 <div id="ingenico_embeded_popup"></div>	
 			
 		</form>
 		
