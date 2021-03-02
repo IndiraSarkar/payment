@@ -27,21 +27,14 @@ public class ResponseController {
 	@Autowired
 	private PaymentService paymentService;
 	
-	@Autowired
-	private ResourceLoader resourceLoader;
-
 	
 	
 	@PostMapping("/response/response-handler")
 	public ModelAndView onlineTransactionHandler(HttpServletRequest request, @RequestParam Map<String,String> requestData) {
 		
 		JSONObject jsonObject = null;
-		JSONParser parser = new JSONParser();
 		try {
-			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream(fileResource.getFile())));
-
+			jsonObject = paymentService.fetchDataFromFile();
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
 			ModelAndView modelAndView = new ModelAndView("ReponseHandler");
