@@ -7,25 +7,24 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ingenico.payment.domain.AdminPage;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Arrays;
+
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
+import com.ingenico.payment.domain.AdminPage;
 import com.ingenico.payment.domain.MerchantData;
 import com.ingenico.payment.domain.TranscationResponse;
 import com.ingenico.payment.service.PaymentService;
@@ -54,13 +53,10 @@ public class PaymentController {
 		JSONObject jsonObject;
 		ModelAndView modelAndView = new ModelAndView("admin");
 		try {
-			String contents = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
-			System.out.println("Contents (Java 7) : " + contents);
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream(fileResource.getFile())));
-			AdminPage adminPage = new Gson().fromJson(jsonObject.toString(), AdminPage.class);
-			System.out.println("adminPage : "+adminPage);
-			modelAndView.addObject("adminPage",adminPage);
+			String jsonFile = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
+			MerchantData merchantData = new Gson().fromJson(jsonFile, MerchantData.class);
+			System.out.println("adminPage : "+merchantData);
+			modelAndView.addObject("merchantData",merchantData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,7 +66,7 @@ public class PaymentController {
 	
 	
 	@PostMapping("/admin")
-	public ModelAndView saveAdmin(HttpServletRequest request, @ModelAttribute("admin") AdminPage adminPage) {
+	public ModelAndView saveAdmin(HttpServletRequest request, @ModelAttribute("admin") MerchantData adminPage) {
 		System.out.println("adminPage :"+adminPage);  
 		String errorMessage = paymentService.saveAdmin(adminPage);
 		ModelAndView modelAndView = new ModelAndView("admin");
@@ -203,8 +199,51 @@ public class PaymentController {
 		
 
 		return null;
+	}
+	
+	@GetMapping("/s2s")
+	public ModelAndView getS2sHandler(HttpServletRequest request) {
+		return  new ModelAndView("S2SHandler");
+		
+		
+	}
+		
+	@PostMapping("/s2s")
+	public ModelAndView s2sHandler(HttpServletRequest request, @RequestParam(value = "msg") String msg) {
+
+		JSONObject jsonObject = null;
+		JSONParser parser = new JSONParser();
+
+		try {
+			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
+			jsonObject = (JSONObject) parser.parse(new InputStreamReader(new FileInputStream(fileResource.getFile())));
+
+			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
+
+			String[] data = msg.split("\\|");
+			String clntTxnRef = data[3];
+			String pgTxnId = data[5];
+			String[] remove = Arrays.copyOf(data, data.length - 1);
+
+			String dataString = String.join("|", remove) + "|" + merchantData.getSalt();
+
+			int status = 0;
+			if (data[15].equals(paymentService.encryptedHash(dataString)))
+				status = 1;
+
+			String response = clntTxnRef + "| " + pgTxnId + " |" + status;
+
+			ModelAndView modelAndView = new ModelAndView("S2SHandler");
+			modelAndView.addObject("response", response);
+			return modelAndView;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 
 	}
+
 	
 	@GetMapping("/reconcile")
 	@ResponseBody
@@ -238,5 +277,10 @@ public class PaymentController {
 		return null;
 	}
 	
-	
+
 }
+	
+	
+	
+	
+

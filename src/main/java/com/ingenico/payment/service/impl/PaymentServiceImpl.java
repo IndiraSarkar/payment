@@ -30,7 +30,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.ingenico.payment.domain.AdminPage;
 import com.ingenico.payment.domain.MerchantData;
 import com.ingenico.payment.domain.TranscationResponse;
 import com.ingenico.payment.service.PaymentService;
@@ -42,7 +41,7 @@ public class PaymentServiceImpl implements PaymentService{
 	private String jsonFilePath;
 	
 	@Override
-	public String saveAdmin(AdminPage adminPageDetails) {
+	public String saveAdmin(MerchantData adminPageDetails) {
 		String errorMsg = null;
 		// Creating Object of ObjectMapper define in Jakson Api
 		ObjectMapper objectMapper = new ObjectMapper();

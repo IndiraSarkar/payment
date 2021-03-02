@@ -12,7 +12,7 @@ import com.ingenico.payment.domain.TranscationResponse;
 
 public interface PaymentService {
 	
-	String saveAdmin(AdminPage admin);
+	String saveAdmin(MerchantData merchantData);
 	
 	int generateRandomNumber();
 	
