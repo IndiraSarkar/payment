@@ -9,12 +9,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ingenico.payment.domain.AdminPage;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -37,11 +42,30 @@ public class PaymentController {
 	@Value("${ingenico.url}")
 	private String url;
 	
+	@Value("${admin.json.data.file}")
+	private String jsonFilePath;
+	
 	@GetMapping("/admin")  
     public ModelAndView adminDisplay()  
     {  
 		System.out.println("ADMIN CONTROLLER");
-        return new ModelAndView("admin");
+		Resource fileResource = resourceLoader.getResource(jsonFilePath);
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObject;
+		ModelAndView modelAndView = new ModelAndView("admin");
+		try {
+			String contents = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
+			System.out.println("Contents (Java 7) : " + contents);
+			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
+					new FileInputStream(fileResource.getFile())));
+			AdminPage adminPage = new Gson().fromJson(jsonObject.toString(), AdminPage.class);
+			System.out.println("adminPage : "+adminPage);
+			modelAndView.addObject("adminPage",adminPage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+        return modelAndView;
     } 
 	
 	
