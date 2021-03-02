@@ -7,18 +7,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Arrays;
 
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
@@ -32,8 +27,6 @@ public class PaymentController {
 	@Autowired
 	private PaymentService paymentService;
 	
-	@Autowired
-	private ResourceLoader resourceLoader;
 	
 	@Value("${ingenico.url}")
 	private String url;
@@ -62,15 +55,12 @@ public class PaymentController {
 	public ModelAndView passTranscationWithModelAndView(HttpServletRequest request) {
 
 		JSONObject jsonObject = null;
-		JSONParser parser = new JSONParser();
+		String errorMsg=null;
 		try {
-
-			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream(fileResource.getFile())));
+			jsonObject = paymentService.fetchDataFromFile();
 
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
-
+		
 			String returnUrl = url + "response/response-handler";
 			int transcationId = paymentService.generateRandomNumber();
 
@@ -82,7 +72,9 @@ public class PaymentController {
 			return modelAndView;
 		} catch (Exception e) {
 			e.printStackTrace();
+			errorMsg = e.getMessage();
 		}
+		
 		return null;
 
 	}
@@ -114,13 +106,9 @@ public class PaymentController {
 			@RequestParam Map<String, String> configData) {
 
 		JSONObject jsonObject = null;
-		JSONParser parser = new JSONParser();
 		try {
 			
-			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream(fileResource.getFile())));
-
+			jsonObject = paymentService.fetchDataFromFile();
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
 			JSONObject obj = paymentService.createRequestForOfflineVerification(configData, merchantData);
@@ -154,11 +142,8 @@ public class PaymentController {
 	public ModelAndView refundHandler(HttpServletRequest request, @RequestParam Map<String, String> configData) {
 
 		JSONObject jsonObject = null;
-		JSONParser parser = new JSONParser();
 		try {
-			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream(fileResource.getFile())));
+			jsonObject = paymentService.fetchDataFromFile();
 
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
@@ -193,12 +178,9 @@ public class PaymentController {
 	public ModelAndView s2sHandler(HttpServletRequest request, @RequestParam(value = "msg") String msg) {
 
 		JSONObject jsonObject = null;
-		JSONParser parser = new JSONParser();
 
 		try {
-			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(new FileInputStream(fileResource.getFile())));
-
+			jsonObject = paymentService.fetchDataFromFile();
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
 			String[] data = msg.split("\\|");
@@ -238,12 +220,8 @@ public class PaymentController {
 	public ModelAndView reconcileHandler(HttpServletRequest request, @RequestParam Map<String, String> configData) {
 
 		JSONObject jsonObject = null;
-		JSONParser parser = new JSONParser();
 		try {
-			Resource fileResource = resourceLoader.getResource("classpath:ConfigFile.json");
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(
-					new FileInputStream(fileResource.getFile())));
-			
+			jsonObject = paymentService.fetchDataFromFile();
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
 
 			List<TranscationResponse> transcationResponseList = paymentService.getResponseListForReconciliation(configData, merchantData);

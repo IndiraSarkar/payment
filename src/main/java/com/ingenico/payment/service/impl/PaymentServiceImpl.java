@@ -1,5 +1,6 @@
 package com.ingenico.payment.service.impl;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -21,6 +22,7 @@ import java.util.stream.IntStream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.ingenico.payment.domain.AdminPage;
 import com.ingenico.payment.domain.MerchantData;
 import com.ingenico.payment.domain.TranscationResponse;
 import com.ingenico.payment.service.PaymentService;
@@ -40,6 +41,9 @@ public class PaymentServiceImpl implements PaymentService{
 	
 	@Value("${admin.json.data.file}")
 	private String jsonFilePath;
+	
+	@Value("${ingenico.url}")
+	private String url;
 	
 	@Override
 	public String saveAdmin(MerchantData adminPageDetails) {
@@ -114,11 +118,12 @@ public class PaymentServiceImpl implements PaymentService{
 		consumerDataObj.put("token", hashValue);
 		consumerDataObj.put("returnUrl", configData.get("ReturnUrl"));
 		consumerDataObj.put("paymentMode", merchantDataMap.get("paymentMode"));
-		/*
-		 * String[] paymentArray =
-		 * merchantDataMap.get("paymentModeOrder").trim().split(",");
-		 * consumerDataObj.put("paymentModeOrder",paymentArray );
-		 */
+		String[] paymentArray = merchantDataMap.get("paymentModeOrder").trim().split(",");
+		for (String string : paymentArray) {
+			System.out.println("payment array"+string);
+		}
+		consumerDataObj.put("paymentModeOrder",paymentArray);
+		 
 		String checkOut = null;
 		if(convertStringToBool(merchantDataMap.get("embedPaymentGatewayOnPage")))
 				checkOut = "#ingenico_embeded_popup";
@@ -335,5 +340,26 @@ public class PaymentServiceImpl implements PaymentService{
 			      .mapToObj(i -> startDate.plusDays(i))
 			      .collect(Collectors.toList()); 
 			}
-	
-}
+
+			@Override
+		public JSONObject fetchDataFromFile(){
+
+			JSONParser parser = new JSONParser();
+			FileReader fr = null;
+			try {
+					fr = new FileReader(jsonFilePath);
+				return (JSONObject) parser.parse(fr);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			finally {
+				try {
+					fr.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+			}
+
+		}

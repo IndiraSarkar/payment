@@ -1,7 +1,5 @@
 package com.ingenico.payment.service;
 
-import com.ingenico.payment.domain.AdminPage;
-
 import java.util.List;
 import java.util.Map;
 
@@ -33,5 +31,7 @@ public interface PaymentService {
 	JSONObject createRequestForRefund(Map<String, String> configData, MerchantData merchantData);
 
 	List<TranscationResponse> getResponseListForReconciliation(Map<String, String> configData, MerchantData merchantData);
+	
+	JSONObject fetchDataFromFile();
 
 }
