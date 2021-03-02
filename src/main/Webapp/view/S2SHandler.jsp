@@ -1,4 +1,4 @@
-<h1>Refund</h1>
+<h1>S2S Handler</h1>
 
 <!DOCTYPE html>
 <html>
