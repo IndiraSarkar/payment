@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Arrays;
 
@@ -32,9 +30,6 @@ public class PaymentController {
 	
 	@Value("${ingenico.url}")
 	private String url;
-	
-	@Value("${admin.json.data.file}")
-	private String jsonFilePath;
 	
 	@GetMapping("/admin")  
     public ModelAndView adminDisplay()  
@@ -80,7 +75,6 @@ public class PaymentController {
 	public ModelAndView passTranscationWithModelAndView(HttpServletRequest request) {
 
 		JSONObject jsonObject = null;
-		String errorMsg=null;
 		try {
 			jsonObject = paymentService.fetchDataFromFile();
 
@@ -97,7 +91,6 @@ public class PaymentController {
 			return modelAndView;
 		} catch (Exception e) {
 			e.printStackTrace();
-			errorMsg = e.getMessage();
 		}
 		
 		return null;
@@ -191,16 +184,10 @@ public class PaymentController {
 
 		return null;
 	}
-	
+
+		
 	@GetMapping("/s2s")
-	public ModelAndView getS2sHandler(HttpServletRequest request) {
-		return  new ModelAndView("S2SHandler");
-		
-		
-	}
-		
-	@PostMapping("/s2s")
-	public ModelAndView s2sHandler(HttpServletRequest request, @RequestParam(value = "msg") String msg) {
+	public ModelAndView s2sHandler(HttpServletRequest request, @RequestParam String msg) {
 
 		JSONObject jsonObject = null;
 
@@ -260,7 +247,6 @@ public class PaymentController {
 		}
 		return null;
 	}
-	
 
 }
 	

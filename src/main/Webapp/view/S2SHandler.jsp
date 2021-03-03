@@ -1,5 +1,3 @@
-<h1>Refund</h1>
-
 <!DOCTYPE html>
 <html>
 
@@ -18,19 +16,11 @@
 </head>
 
 <body>
- <form action="s2s" method="post"> 
- 
-  <label for="Msg">Msg:</label>
-	    <input type="text" id="msg" name="msg"  required=true size="70"/>
-	    <br><br>
-	    <input type="submit" value="Submit">
-     </form>
-	     
+  <h1>S2S Handler</h1>
   
-<c:if test="${not empty response}">
-<h3>${response}</h3>
-
-</c:if>
+	<c:if test="${not empty response}">
+		<h3>${response}</h3>
+	</c:if>
 
 
 </body>

@@ -240,7 +240,7 @@
 
 			<tr>
 				<th>
-					<label for="paymentMode">Disclaimer Message</label>
+					<label for="paymentMode">Payment Mode</label>
 				</th>
 				<td>
 					<select id="paymentMode" name="paymentMode">
