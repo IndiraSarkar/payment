@@ -66,6 +66,7 @@
 					<td>${response.paymentMethod.paymentTransaction.dateTime}</td>
 				</tr>
 			</table>
+			<br>
 		</c:forEach>	
 	</c:if>
 
