@@ -108,7 +108,6 @@ public class PaymentServiceImpl implements PaymentService{
 	@Override
 	public JSONObject getHashObject(String hashValue, Map<String, String> configData) {
 		
-		String merchantData = configData.get("config_data");
 		JSONObject merchantobject =fetchDataFromFile();
 
 		MerchantData merchantDataValue = new Gson().fromJson(merchantobject.toString(), MerchantData.class);

@@ -16,7 +16,7 @@
 	src="${pageContext.request.contextPath}/js/checkout.js"></script>	
 	
 	
-<title>Insert title here</title>
+<title>Ingenico</title>
 </head>
 <body>
   
