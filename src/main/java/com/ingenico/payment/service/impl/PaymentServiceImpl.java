@@ -107,8 +107,13 @@ public class PaymentServiceImpl implements PaymentService{
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getHashObject(String hashValue, Map<String, String> configData) {
+		
 		String merchantData = configData.get("config_data");
-		Map<String,String> merchantDataMap = convertToStringToHashMap(merchantData);
+		JSONObject merchantobject =fetchDataFromFile();
+
+		MerchantData merchantDataValue = new Gson().fromJson(merchantobject.toString(), MerchantData.class);
+		//Map<String,String> merchantDataMap = convertToStringToHashMap(merchantData);
+		
 		JSONObject obj = new JSONObject();
 		
 		
@@ -116,24 +121,24 @@ public class PaymentServiceImpl implements PaymentService{
 		consumerDataObj.put("deviceId","WEBSH2");
 		consumerDataObj.put("token", hashValue);
 		consumerDataObj.put("returnUrl", configData.get("ReturnUrl"));
-		consumerDataObj.put("paymentMode", merchantDataMap.get("paymentMode"));
-		/*
-		 * String[] paymentArray = merchantDataMap.get("paymentModeOrder").split(",");
-		 * 
-		 * consumerDataObj.put("paymentModeOrder",paymentArray);
-		 */ 
+		consumerDataObj.put("paymentMode",merchantDataValue.getPaymentMode());
+		
+		  String[] paymentArray = merchantDataValue.getPaymentModeOrder().split(",");
+		 
+		  consumerDataObj.put("paymentModeOrder",paymentArray);
+		  
 		String checkOut = null;
-		if(convertStringToBool(merchantDataMap.get("embedPaymentGatewayOnPage")))
+		if(convertStringToBool(merchantDataValue.getEmbedPaymentGatewayOnPage()))
 				checkOut = "#ingenico_embeded_popup";
 		else
 			checkOut = "";				
 				
 		consumerDataObj.put("checkoutElement", checkOut);
-		consumerDataObj.put("merchantLogoUrl", merchantDataMap.get("logoURL"));
+		consumerDataObj.put("merchantLogoUrl",merchantDataValue.getLogoURL());
 		consumerDataObj.put("merchantId", configData.get("MerchantCode"));
 		
-		consumerDataObj.put("merchantMsg", merchantDataMap.get("merchantMessage"));
-		consumerDataObj.put("disclaimerMsg", merchantDataMap.get("disclaimerMessage"));
+		consumerDataObj.put("merchantMsg", merchantDataValue.getMerchantMessage());
+		consumerDataObj.put("disclaimerMsg", merchantDataValue.getDisclaimerMessage());
 		consumerDataObj.put("currency", configData.get("currency"));
 		consumerDataObj.put("consumerId", configData.get("custID"));
 		
@@ -143,10 +148,10 @@ public class PaymentServiceImpl implements PaymentService{
 		
 		
 		JSONObject customStyleObj = new JSONObject();
-		customStyleObj.put("PRIMARY_COLOR_CODE", merchantDataMap.get("primaryColor"));
-		customStyleObj.put("SECONDARY_COLOR_CODE", merchantDataMap.get("secondaryColor"));
-		customStyleObj.put("BUTTON_COLOR_CODE_1", merchantDataMap.get("buttonColor1"));
-		customStyleObj.put("BUTTON_COLOR_CODE_2", merchantDataMap.get("buttonColor2"));
+		customStyleObj.put("PRIMARY_COLOR_CODE", merchantDataValue.getPrimaryColor());
+		customStyleObj.put("SECONDARY_COLOR_CODE",merchantDataValue.getSecondaryColor() );
+		customStyleObj.put("BUTTON_COLOR_CODE_1",merchantDataValue.getButtonColor1() );
+		customStyleObj.put("BUTTON_COLOR_CODE_2",merchantDataValue.getButtonColor2());
 		
 		
 		JSONArray itemArray = new JSONArray();
@@ -169,12 +174,12 @@ public class PaymentServiceImpl implements PaymentService{
 		featureObj.put("enableMerTxnDetails", true);
 		featureObj.put("enableAbortResponse", false);
 		featureObj.put("enableSI", false);
-		featureObj.put("enableNewWindowFlow", convertStringToBool(merchantDataMap.get("enableNewWindowFlow")));
-		featureObj.put("enableExpressPay", convertStringToBool(merchantDataMap.get("enableExpressPay")));
-		featureObj.put("enableInstrumentDeRegistration", convertStringToBool(merchantDataMap.get("enableInstrumentDeRegistration")));
-		featureObj.put("hideSavedInstruments", convertStringToBool(merchantDataMap.get("hideSavedInstruments")));
-		featureObj.put("separateCardMode", convertStringToBool(merchantDataMap.get("separateCardMode")));
-		featureObj.put("payWithSavedInstrument", convertStringToBool(merchantDataMap.get("saveInstrument")));
+		featureObj.put("enableNewWindowFlow", convertStringToBool(merchantDataValue.getEnableNewWindowFlow()));
+		featureObj.put("enableExpressPay", convertStringToBool(merchantDataValue.getEnableExpressPay()));
+		featureObj.put("enableInstrumentDeRegistration", convertStringToBool(merchantDataValue.getEnableInstrumentDeRegistration()));
+		featureObj.put("hideSavedInstruments", convertStringToBool(merchantDataValue.getHideSavedInstruments()));
+		featureObj.put("separateCardMode", convertStringToBool(merchantDataValue.getSeparateCardMode()));
+		featureObj.put("payWithSavedInstrument", convertStringToBool(merchantDataValue.getSaveInstrument()));
 		
 		//add feature to a object
 		
