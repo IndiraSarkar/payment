@@ -111,7 +111,6 @@ public class PaymentServiceImpl implements PaymentService{
 		JSONObject merchantobject =fetchDataFromFile();
 
 		MerchantData merchantDataValue = new Gson().fromJson(merchantobject.toString(), MerchantData.class);
-		//Map<String,String> merchantDataMap = convertToStringToHashMap(merchantData);
 		
 		JSONObject obj = new JSONObject();
 		

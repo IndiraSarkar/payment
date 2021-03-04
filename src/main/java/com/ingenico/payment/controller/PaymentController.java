@@ -28,13 +28,9 @@ public class PaymentController {
 	private PaymentService paymentService;
 	
 	
-	@Value("${ingenico.url}")
-	private String url;
-	
 	@GetMapping("/admin")  
     public ModelAndView adminDisplay()  
     {  
-		System.out.println("ADMIN CONTROLLER");
 		ModelAndView modelAndView = new ModelAndView("admin");
 		JSONObject jsonObject = null;
 		try {
@@ -79,8 +75,9 @@ public class PaymentController {
 			jsonObject = paymentService.fetchDataFromFile();
 
 			MerchantData merchantData = new Gson().fromJson(jsonObject.toString(), MerchantData.class);
-		
-			String returnUrl = url + "response/response-handler";
+			String url = request.getScheme() + "://" + request.getHeader("host") + request.getContextPath();
+		   
+			String returnUrl = url + "/response/response-handler";
 			int transcationId = paymentService.generateRandomNumber();
 
 
