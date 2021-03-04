@@ -42,8 +42,6 @@ public class PaymentServiceImpl implements PaymentService{
 	@Value("${admin.json.data.file}")
 	private String jsonFilePath;
 	
-	@Value("${ingenico.url}")
-	private String url;
 	
 	@Override
 	public String saveAdmin(MerchantData adminPageDetails) {
